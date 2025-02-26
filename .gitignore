@@ -54,6 +54,7 @@ dkms.conf
 # ESP-IDF
 build/
 target/
+*cache/
 sdkconfig
 sdkconfig.old
 compile_commands.json
