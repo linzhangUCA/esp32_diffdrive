@@ -3,26 +3,15 @@
 #include "driver/gpio.h"
 
 typedef struct {
-    // 方向控制引脚
-    gpio_num_t dir_pin;
-    // PWM控制参数
-    ledc_channel_t pwm_channel;
-    ledc_timer_t pwm_timer;
-    // 电机配置校验
-    uint8_t initialized;
-} MotorConfig;
+    gpio_num_t pwm_pin;    // PWM pin (e.g., GPIO1)
+    gpio_num_t dir_pin;    // Direction pin (e.g., GPIO2)
+    ledc_channel_t pwm_channel; // LEDC channel (e.g., LEDC_CHANNEL_0)
+    ledc_timer_t pwm_timer;     // LEDC timer (e.g., LEDC_TIMER_0)
+} motor_config_t;
 
-/**
- * @brief 初始化电机驱动
- * @param config 包含PWM通道、定时器和方向引脚的配置结构体
- * @param pwm_freq_hz PWM频率（推荐10-20kHz）
- */
-void motor_init(MotorConfig *config, uint32_t pwm_freq_hz);
+// Initialize motor driver
+void motor_init(const motor_config_t *config);
 
-/**
- * @brief 设置电机速度和方向
- * @param config 已初始化的电机配置
- * @param duty 占空比（0~100%）
- * @param direction 方向（0=正向，1=反向）
- */
-void motor_set_speed(MotorConfig *config, float duty, uint8_t direction);
+// Set motor speed and direction
+void motor_set_speed(int speed_percent); // Speed: -100% (reverse) to +100% (forward)
+void motor_set_direction(bool forward);  // True = forward, False = reverse
