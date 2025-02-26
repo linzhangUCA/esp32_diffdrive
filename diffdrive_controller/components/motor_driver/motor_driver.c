@@ -1,5 +1,4 @@
 #include "motor_driver.h"
-#include "driver/ledc.h"
 #include "esp_log.h"
 #include <stdio.h>
 
