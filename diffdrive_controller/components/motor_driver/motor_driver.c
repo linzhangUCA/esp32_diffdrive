@@ -10,8 +10,8 @@ void motor_init(const motor_config_t *config) {
   g_config = *config;
 
   // Configure DIR pin as output
-  gpio_reset_pin(g_config.dir_pin_id);
-  gpio_set_direction(g_config.dir_pin_id, GPIO_MODE_OUTPUT);
+  gpio_reset_pin(g_config.dir_pin);
+  gpio_set_direction(g_config.dir_pin, GPIO_MODE_OUTPUT);
 
   // Configure PWM timer for pwm pin
   ledc_timer_config_t pwm_pin_timer = {
@@ -25,10 +25,10 @@ void motor_init(const motor_config_t *config) {
 
   // Configure PWM channel for pwm pin
   ledc_channel_config_t pwm_pin_channel = {
-      .gpio_num = g_config.pwm_pin_id,
+      .gpio_num = g_config.pwm_pin,
       .speed_mode = LEDC_LOW_SPEED_MODE,
-      .channel = g_config.pwm_channel_num,
-      .timer_sel = g_config.pwm_timer_num,
+      .channel = g_config.pwm_channel,
+      .timer_sel = g_config.pwm_timer,
       .duty = 0,
       .hpoint = 0,
   };
@@ -38,7 +38,7 @@ void motor_init(const motor_config_t *config) {
 }
 
 void motor_set_direction(bool forward) {
-  gpio_set_level(g_config.dir_pin_id, forward ? 1 : 0);
+  gpio_set_level(g_config.dir_pin, forward ? 1 : 0);
 }
 
 void motor_set_speed(int speed_percent) {
@@ -55,6 +55,6 @@ void motor_set_speed(int speed_percent) {
   uint32_t duty = (abs(speed_percent) * 1023) / 100;
 
   // Update PWM duty
-  ledc_set_duty(LEDC_LOW_SPEED_MODE, g_config.pwm_channel_num, duty);
-  ledc_update_duty(LEDC_LOW_SPEED_MODE, g_config.pwm_channel_num);
+  ledc_set_duty(LEDC_LOW_SPEED_MODE, g_config.pwm_channel, duty);
+  ledc_update_duty(LEDC_LOW_SPEED_MODE, g_config.pwm_channel);
 }
