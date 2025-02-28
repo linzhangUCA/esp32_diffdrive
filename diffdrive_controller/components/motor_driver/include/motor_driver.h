@@ -1,4 +1,6 @@
 #pragma once
+#include <stdint.h>
+
 #include "driver/gpio.h"
 #include "driver/ledc.h"
 #include "esp_err.h"
@@ -14,7 +16,7 @@ typedef struct {
 } motor_t;
 
 // Initialize motor driver
-esp_err_t enable_motor(const motor_t *m_cfg);
+esp_err_t enable_motor(const motor_t *motor);
 
 /**
  * @brief Set speed for motor
@@ -28,7 +30,7 @@ esp_err_t enable_motor(const motor_t *m_cfg);
  * parameters
  *      - ESP_FAIL: Set motor speed failed because other error occurred
  */
-esp_err_t motor_set_speed(motor_t *motor, int16_t speed);
+esp_err_t motor_set_speed(motor_t *motor, int16_t duty_percent);
 
 /**
  * @brief Set motor direction to forward

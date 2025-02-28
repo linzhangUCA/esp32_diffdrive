@@ -1,33 +1,43 @@
+#include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "encoder.h"
+#include "motor_driver.h"
 
-static const char *TAG = "Encoder";
+static const char *TAG = "MotorTest";
+int duty_pct;
 
 void app_main(void) {
-  // Configure encoder
-  encoder_config_t enc_cfg = {
-      .enc_a_pin = GPIO_NUM_4,
-      .enc_b_pin = GPIO_NUM_5,
-      // .pcnt_unit = NULL,
-      .counts_per_rev = 48,
+  // Configure motor (adjust GPIOs as needed)
+  motor_t motor = {
+      .ph_pin = GPIO_NUM_13,
+      .en_pin = GPIO_NUM_14,
+      .pwm_channel = LEDC_CHANNEL_0,
+      .pwm_timer = LEDC_TIMER_0,
   };
 
-  pcnt_unit_handle_t encoder;
-  int i;
-  int pulse_count = 0;
+  enable_motor(&motor);
 
-  // Initialize encoder
-  encoder=encoder_init(&enc_cfg);
-
-  // Read encoder counts
-  for (i = 0; i < 200; i++) {
-    pcnt_unit_get_count(encoder, &pulse_count);
-    ESP_LOGI(TAG, "Pulse count: %d", pulse_count);
-    vTaskDelay(100 / portTICK_PERIOD_MS);
+  for (duty_pct = 0; duty_pct < 100; duty_pct = duty_pct + 5) {
+    motor_set_speed(&motor, duty_pct);
+    ESP_LOGI(TAG, "forward up");
+    vTaskDelay(200 / portTICK_PERIOD_MS);
   }
-  // int pulse_count;
-  // ESP_ERROR_CHECK(pcnt_unit_get_count(pcnt_unit, &pulse_count));
-  // ESP_LOGI(TAG, "Pulse count: %d", pulse_count);
+  for (duty_pct = 100; duty_pct > 0; duty_pct = duty_pct - 5) {
+    motor_set_speed(&motor, duty_pct);
+    ESP_LOGI(TAG, "forward down");
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+  }
+  for (duty_pct = 0; duty_pct > -100; duty_pct = duty_pct - 5) {
+    motor_set_speed(&motor, duty_pct);
+    ESP_LOGI(TAG, "reverse up");
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+  }
+  for (duty_pct = -100; duty_pct < 0; duty_pct = duty_pct + 5) {
+    motor_set_speed(&motor, duty_pct);
+    ESP_LOGI(TAG, "reverse down");
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+  }
 
+  // Stop motor
+  motor_set_speed(&motor, duty_pct);
 }
