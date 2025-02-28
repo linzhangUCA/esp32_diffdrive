@@ -2,7 +2,7 @@
 
 static const char *TAG = "Encoder";
 
-void encoder_init(const encoder_config_t *config) {
+pcnt_unit_handle_t encoder_init(const encoder_config_t *config) {
   // 1. Configure PCNT unit
   ESP_LOGD(TAG, "install pcnt unit");
   pcnt_unit_config_t unit_config = {
@@ -53,39 +53,38 @@ void encoder_init(const encoder_config_t *config) {
   // Set watch point
   ESP_ERROR_CHECK(pcnt_unit_add_watch_point(pcnt_unit, unit_config.high_limit));
   ESP_ERROR_CHECK(pcnt_unit_add_watch_point(pcnt_unit, unit_config.low_limit));
-  // 3. Enable and start the PCNT unit
-  ret = pcnt_unit_enable(pcnt_unit);
-  if (ret != ESP_OK) {
-    ESP_LOGE(TAG, "Failed to enable PCNT unit: %s", esp_err_to_name(ret));
-    return ret;
-  }
-  ret = pcnt_unit_start(pcnt_unit);
-  if (ret != ESP_OK) {
-    ESP_LOGE(TAG, "Failed to start PCNT unit: %s", esp_err_to_name(ret));
-    return ret;
-  }
+
+
+  // Enable and start PCNT unit
+  ESP_LOGI(TAG, "enable pcnt unit");
+  ESP_ERROR_CHECK(pcnt_unit_enable(pcnt_unit));
+  ESP_LOGI(TAG, "clear pcnt unit");
+  ESP_ERROR_CHECK(pcnt_unit_clear_count(pcnt_unit));
+  ESP_LOGI(TAG, "start pcnt unit");
+  ESP_ERROR_CHECK(pcnt_unit_start(pcnt_unit));
 
   // Save the PCNT unit handle in the config
-  config->pcnt_unit = pcnt_unit;
+  // config->pcnt_unit = pcnt_unit;
 
+  return pcnt_unit;
   ESP_LOGI(TAG, "Encoder initialized");
 }
 
-esp_err_t encoder_get_count(pcnt_unit_handle_t pcnt_unit, int *count) {
-  return pcnt_unit_get_count(pcnt_unit, count);
-}
+// esp_err_t encoder_get_count(pcnt_unit_handle_t pcnt_unit, int *count) {
+//   return pcnt_unit_get_count(pcnt_unit, count);
+// }
 
-float encoder_get_velocity(pcnt_unit_handle_t pcnt_unit, float delta_time_sec) {
-  static int prev_count = 0;
-  int curr_count;
-  esp_err_t ret = encoder_get_count(pcnt_unit, &curr_count);
-  if (ret != ESP_OK)
-    return 0.0;
-
-  int delta_count = curr_count - prev_count;
-  prev_count = curr_count;
-
-  float counts_per_rev = 4096.0; // 1024 PPR * 4 (quadrature)
-  float rad_per_count = (2 * M_PI) / counts_per_rev;
-  return (delta_count * rad_per_count) / delta_time_sec;
-}
+// float encoder_get_velocity(pcnt_unit_handle_t pcnt_unit, float delta_time_sec) {
+//   static int prev_count = 0;
+//   int curr_count;
+//   esp_err_t ret = encoder_get_count(pcnt_unit, &curr_count);
+//   if (ret != ESP_OK)
+//     return 0.0;
+// 
+//   int delta_count = curr_count - prev_count;
+//   prev_count = curr_count;
+// 
+//   float counts_per_rev = 4096.0; // 1024 PPR * 4 (quadrature)
+//   float rad_per_count = (2 * M_PI) / counts_per_rev;
+//   return (delta_count * rad_per_count) / delta_time_sec;
+// }
