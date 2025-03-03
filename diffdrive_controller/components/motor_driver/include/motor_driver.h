@@ -15,7 +15,16 @@ typedef struct {
   ledc_timer_t pwm_timer;     // LEDC timer (e.g., LEDC_TIMER_0)
 } motor_t;
 
-// Initialize motor driver
+/**
+ * @brief Enable motor
+ *
+ * @param motor: Motor struct
+ *
+ * @return
+ *      - ESP_OK: Enable motor successfully
+ *      - ESP_ERR_INVALID_ARG: Enable motor failed because of invalid parameters
+ *      - ESP_FAIL: Enable motor failed because other error occurred
+ */
 esp_err_t enable_motor(const motor_t *motor);
 
 /**
