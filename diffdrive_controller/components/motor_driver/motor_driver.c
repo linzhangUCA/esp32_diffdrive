@@ -16,6 +16,16 @@ esp_err_t enable_motor(const motor_t *motor) {
   };
   ESP_RETURN_ON_ERROR(gpio_config(&ph_pin_conf), TAG,
                       "config phase pin failed");
+  // Configure PWM pin as output
+  gpio_config_t en_pin_conf = {
+      .intr_type = GPIO_INTR_DISABLE, // Disable interrupt
+      .mode = GPIO_MODE_OUTPUT,       // Set as output mode
+      .pin_bit_mask = motor->en_pin,  // Mark phase pin
+      .pull_up_en = 0,                // Disable pull-up
+      .pull_down_en = 0,              // Disable pull-down
+  };
+  ESP_RETURN_ON_ERROR(gpio_config(&en_pin_conf), TAG,
+                      "config enable pin failed");
   // ESP_RETURN_ON_ERROR(gpio_reset_pin(motor->ph_pin), TAG,
   //                                           "reset gpio failed");
   ESP_RETURN_ON_ERROR(gpio_set_direction(motor->ph_pin, GPIO_MODE_OUTPUT), TAG,
