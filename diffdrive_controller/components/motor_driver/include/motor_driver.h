@@ -28,6 +28,19 @@ typedef struct {
 esp_err_t enable_motor(const motor_t *motor);
 
 /**
+ * @brief Disable motor
+ *
+ * @param motor: Motor struct
+ *
+ * @return
+ *      - ESP_OK: Disable motor successfully
+ *      - ESP_ERR_INVALID_ARG: Disable motor failed because of invalid
+ * parameters
+ *      - ESP_FAIL: Disable motor failed because other error occurred
+ */
+void disable_motor(const motor_t *motor);
+
+/**
  * @brief Set speed for motor
  *
  * @param motor: Motor struct

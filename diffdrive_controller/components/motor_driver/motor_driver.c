@@ -5,6 +5,12 @@
 
 static const char *TAG = "MotorDriver";
 
+void disable_motor(const motor_t *motor) {
+  // Configure DIR pin as output
+  gpio_dump_io_configuration(stdout,
+                             (1ULL << motor->ph_pin) | (1ULL << motor->en_pin));
+}
+
 esp_err_t enable_motor(const motor_t *motor) {
   // Configure DIR pin as output
   gpio_config_t ph_pin_conf = {

@@ -39,5 +39,6 @@ void app_main(void) {
   }
 
   // Stop motor
-  motor_set_speed(&motor, duty_pct);
+  motor_set_speed(&motor, 0);
+  disable_motor(&motor);
 }
