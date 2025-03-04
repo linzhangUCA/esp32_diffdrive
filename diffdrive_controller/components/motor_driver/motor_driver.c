@@ -1,6 +1,4 @@
 #include "motor_driver.h"
-#include "driver/gpio.h"
-#include "driver/ledc.h"
 #include "esp_check.h"
 #include "esp_err.h"
 #include "esp_log.h"
