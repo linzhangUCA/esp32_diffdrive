@@ -9,8 +9,9 @@
  * @brief PH/EN Motor Configuration (Phase: direction; Enable: PWM)
  */
 typedef struct {
-  gpio_num_t ph_pin;          // Direction pin (e.g., GPIO_NUM_2)
-  gpio_num_t en_pin;          // PWM pin (e.g., GPIO_NUM_1)
+  gpio_num_t pwm_pin;         // PWM pin (e.g., GPIO_NUM_1)
+  gpio_num_t in1_pin;         // Direction pin (e.g., GPIO_NUM_2)
+  gpio_num_t in2_pin;         // Direction pin (e.g., GPIO_NUM_2)
   ledc_channel_t pwm_channel; // LEDC channel (e.g., LEDC_CHANNEL_0)
   ledc_timer_t pwm_timer;     // LEDC timer (e.g., LEDC_TIMER_0)
 } motor_t;

@@ -9,8 +9,9 @@ int duty_pct;
 void app_main(void) {
   // Configure motor (adjust GPIOs as needed)
   motor_t motor = {
-      .ph_pin = GPIO_NUM_13,
-      .en_pin = GPIO_NUM_14,
+      .pwm_pin = GPIO_NUM_12,
+      .in1_pin = GPIO_NUM_13,
+      .in2_pin = GPIO_NUM_14,
       .pwm_channel = LEDC_CHANNEL_0,
       .pwm_timer = LEDC_TIMER_0,
   };
