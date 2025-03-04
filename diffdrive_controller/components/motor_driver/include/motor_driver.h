@@ -76,3 +76,14 @@ esp_err_t motor_forward(motor_t *motor);
  *      - ESP_FAIL: Reverse motor failed because some other error occurred
  */
 esp_err_t motor_reverse(motor_t *motor);
+
+/**
+ * @brief Stop motor
+ *
+ * @param strip: Motor struct
+ *
+ * @return
+ *      - ESP_OK: Motor brake successfully
+ *      - ESP_FAIL: Motor brake failed because some other error occurred
+ */
+esp_err_t motor_brake(motor_t *motor);

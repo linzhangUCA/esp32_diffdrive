@@ -113,3 +113,12 @@ esp_err_t motor_set_speed(motor_t *motor, int16_t duty_percent) {
   ESP_LOGI(TAG, "Set motor speed to %d", duty_percent);
   return ESP_OK;
 }
+
+esp_err_t motor_brake(motor_t *motor) {
+  ESP_RETURN_ON_ERROR(gpio_set_level(motor->in1_pin, 0), TAG,
+                      "set IN1 low failed");
+  ESP_RETURN_ON_ERROR(gpio_set_level(motor->in2_pin, 0), TAG,
+                      "set IN2 low failed");
+  ESP_LOGI(TAG, "Stop motor");
+  return ESP_OK;
+}
