@@ -1,14 +1,30 @@
 #include "motor_driver.h"
+#include "driver/gpio.h"
+#include "driver/ledc.h"
 #include "esp_check.h"
 #include "esp_err.h"
 #include "esp_log.h"
+#include "hal/gpio_types.h"
+#include "hal/ledc_types.h"
 
 static const char *TAG = "MotorDriver";
 
-void disable_motor(const motor_t *motor) {
-  // Configure DIR pin as output
-  gpio_dump_io_configuration(stdout,
-                             (1ULL << motor->ph_pin) | (1ULL << motor->en_pin));
+esp_err_t disable_motor(const motor_t *motor) {
+  ESP_RETURN_ON_ERROR(gpio_reset_pin(motor->ph_pin), TAG,
+                      "reset phase pin failed");
+  ESP_RETURN_ON_ERROR(ledc_stop(LEDC_LOW_SPEED_MODE, motor->pwm_channel, 0),
+                      TAG, "stop enable pin pwm channel failed");
+  ESP_RETURN_ON_ERROR(gpio_reset_pin(motor->en_pin), TAG,
+                      "reset enable pin failed");
+  ESP_RETURN_ON_ERROR(gpio_set_direction(motor->ph_pin, GPIO_MODE_OUTPUT), TAG,
+                      "set pahse pin direction failed");
+  ESP_RETURN_ON_ERROR(gpio_set_direction(motor->en_pin, GPIO_MODE_OUTPUT), TAG,
+                      "set enable pin direction failed");
+  // gpio_dump_io_configuration(stdout,
+  //                            (1ULL << motor->ph_pin) | (1ULL <<
+  //                            motor->en_pin));
+  return ESP_OK;
+  ESP_LOGI(TAG, "disabled");
 }
 
 esp_err_t enable_motor(const motor_t *motor) {
@@ -22,16 +38,6 @@ esp_err_t enable_motor(const motor_t *motor) {
   };
   ESP_RETURN_ON_ERROR(gpio_config(&ph_pin_conf), TAG,
                       "config phase pin failed");
-  // Configure PWM pin as output
-  gpio_config_t en_pin_conf = {
-      .intr_type = GPIO_INTR_DISABLE, // Disable interrupt
-      .mode = GPIO_MODE_OUTPUT,       // Set as output mode
-      .pin_bit_mask = motor->en_pin,  // Mark phase pin
-      .pull_up_en = 0,                // Disable pull-up
-      .pull_down_en = 0,              // Disable pull-down
-  };
-  ESP_RETURN_ON_ERROR(gpio_config(&en_pin_conf), TAG,
-                      "config enable pin failed");
   // ESP_RETURN_ON_ERROR(gpio_reset_pin(motor->ph_pin), TAG,
   //                                           "reset gpio failed");
   ESP_RETURN_ON_ERROR(gpio_set_direction(motor->ph_pin, GPIO_MODE_OUTPUT), TAG,

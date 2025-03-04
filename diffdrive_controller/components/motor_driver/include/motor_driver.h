@@ -38,7 +38,7 @@ esp_err_t enable_motor(const motor_t *motor);
  * parameters
  *      - ESP_FAIL: Disable motor failed because other error occurred
  */
-void disable_motor(const motor_t *motor);
+esp_err_t disable_motor(const motor_t *motor);
 
 /**
  * @brief Set speed for motor
