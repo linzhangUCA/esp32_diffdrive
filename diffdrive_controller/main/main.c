@@ -19,43 +19,46 @@ void app_main(void) {
   enable_motor(&motor);
 
   // Initialize encoder
-  encoder_config_t enc_cfg = {
+  encoder_t encoder = {
       .enc_a_pin = GPIO_NUM_13,
       .enc_b_pin = GPIO_NUM_14,
-      // .pcnt_unit = NULL,
+      .pcnt_unit = NULL,
       .counts_per_rev = 4096,
   };
-  pcnt_unit_handle_t encoder;
   int pulse_count = 0;
-  encoder = encoder_init(&enc_cfg);
+  float ang_vel = 0.0;
+  enable_encoder(&encoder);
 
   // Ramp up forward
   for (duty_pct = 0; duty_pct < 100; duty_pct = duty_pct + 5) {
     motor_set_speed(&motor, duty_pct);
-    pcnt_unit_get_count(encoder, &pulse_count);
-    ESP_LOGI(TAG, "Pulse count: %d", pulse_count);
     vTaskDelay(200 / portTICK_PERIOD_MS);
+    ang_vel = encoder_get_velocity(&encoder, 0.2);
+    ESP_LOGI(TAG, "angular velocity: %f", ang_vel);
   }
   // Ramp down forward
   for (duty_pct = 100; duty_pct > 0; duty_pct = duty_pct - 5) {
     motor_set_speed(&motor, duty_pct);
-    pcnt_unit_get_count(encoder, &pulse_count);
-    ESP_LOGI(TAG, "Pulse count: %d", pulse_count);
+    pcnt_unit_get_count(encoder.pcnt_unit, &pulse_count);
     vTaskDelay(200 / portTICK_PERIOD_MS);
+    ang_vel = encoder_get_velocity(&encoder, 0.2);
+    ESP_LOGI(TAG, "angular velocity: %f", ang_vel);
   }
   // Ramp up reverse
   for (duty_pct = 0; duty_pct > -100; duty_pct = duty_pct - 5) {
     motor_set_speed(&motor, duty_pct);
-    pcnt_unit_get_count(encoder, &pulse_count);
-    ESP_LOGI(TAG, "Pulse count: %d", pulse_count);
+    pcnt_unit_get_count(encoder.pcnt_unit, &pulse_count);
     vTaskDelay(200 / portTICK_PERIOD_MS);
+    ang_vel = encoder_get_velocity(&encoder, 0.2);
+    ESP_LOGI(TAG, "angular velocity: %f", ang_vel);
   }
   // Ramp down reverse
   for (duty_pct = -100; duty_pct < 0; duty_pct = duty_pct + 5) {
     motor_set_speed(&motor, duty_pct);
-    pcnt_unit_get_count(encoder, &pulse_count);
-    ESP_LOGI(TAG, "Pulse count: %d", pulse_count);
+    pcnt_unit_get_count(encoder.pcnt_unit, &pulse_count);
     vTaskDelay(200 / portTICK_PERIOD_MS);
+    ang_vel = encoder_get_velocity(&encoder, 0.2);
+    ESP_LOGI(TAG, "angular velocity: %f", ang_vel);
   }
 
   // Stop then disable motor
