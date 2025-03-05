@@ -54,7 +54,6 @@ pcnt_unit_handle_t encoder_init(const encoder_config_t *config) {
   ESP_ERROR_CHECK(pcnt_unit_add_watch_point(pcnt_unit, unit_config.high_limit));
   ESP_ERROR_CHECK(pcnt_unit_add_watch_point(pcnt_unit, unit_config.low_limit));
 
-
   // Enable and start PCNT unit
   ESP_LOGI(TAG, "enable pcnt unit");
   ESP_ERROR_CHECK(pcnt_unit_enable(pcnt_unit));
@@ -74,16 +73,17 @@ pcnt_unit_handle_t encoder_init(const encoder_config_t *config) {
 //   return pcnt_unit_get_count(pcnt_unit, count);
 // }
 
-// float encoder_get_velocity(pcnt_unit_handle_t pcnt_unit, float delta_time_sec) {
+// float encoder_get_velocity(pcnt_unit_handle_t pcnt_unit, float
+// delta_time_sec) {
 //   static int prev_count = 0;
 //   int curr_count;
 //   esp_err_t ret = encoder_get_count(pcnt_unit, &curr_count);
 //   if (ret != ESP_OK)
 //     return 0.0;
-// 
+//
 //   int delta_count = curr_count - prev_count;
 //   prev_count = curr_count;
-// 
+//
 //   float counts_per_rev = 4096.0; // 1024 PPR * 4 (quadrature)
 //   float rad_per_count = (2 * M_PI) / counts_per_rev;
 //   return (delta_count * rad_per_count) / delta_time_sec;

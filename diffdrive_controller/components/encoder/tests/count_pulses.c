@@ -7,10 +7,10 @@ static const char *TAG = "Encoder";
 void app_main(void) {
   // Configure encoder
   encoder_config_t enc_cfg = {
-      .enc_a_pin = GPIO_NUM_4,
-      .enc_b_pin = GPIO_NUM_5,
+      .enc_a_pin = GPIO_NUM_13,
+      .enc_b_pin = GPIO_NUM_14,
       // .pcnt_unit = NULL,
-      .counts_per_rev = 48,
+      .counts_per_rev = 4096,
   };
 
   pcnt_unit_handle_t encoder;
