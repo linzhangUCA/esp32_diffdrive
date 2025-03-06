@@ -14,7 +14,7 @@ typedef struct {
   gpio_num_t in2_pin;         // Direction pin (e.g., GPIO_NUM_2)
   ledc_channel_t pwm_channel; // LEDC channel (e.g., LEDC_CHANNEL_0)
   ledc_timer_t pwm_timer;     // LEDC timer (e.g., LEDC_TIMER_0)
-} motor_t;
+} motor_config_t;
 
 /**
  * @brief Enable motor
@@ -26,7 +26,7 @@ typedef struct {
  *      - ESP_ERR_INVALID_ARG: Enable motor failed because of invalid parameters
  *      - ESP_FAIL: Enable motor failed because other error occurred
  */
-esp_err_t enable_motor(const motor_t *motor);
+esp_err_t enable_motor(const motor_config_t *mtr_cfg);
 
 /**
  * @brief Disable motor
@@ -39,7 +39,7 @@ esp_err_t enable_motor(const motor_t *motor);
  * parameters
  *      - ESP_FAIL: Disable motor failed because other error occurred
  */
-esp_err_t disable_motor(const motor_t *motor);
+esp_err_t disable_motor(const motor_config_t *mtr_cfg);
 
 /**
  * @brief Set speed for motor
@@ -53,7 +53,7 @@ esp_err_t disable_motor(const motor_t *motor);
  * parameters
  *      - ESP_FAIL: Set motor speed failed because other error occurred
  */
-esp_err_t motor_set_speed(motor_t *motor, int16_t duty_percent);
+esp_err_t motor_set_speed(motor_config_t *mtr_cfg, int16_t duty_percent);
 
 /**
  * @brief Set motor direction to forward
@@ -64,7 +64,7 @@ esp_err_t motor_set_speed(motor_t *motor, int16_t duty_percent);
  *      - ESP_OK: Forward motor successfully
  *      - ESP_FAIL: Forward motor failed because some other error occurred
  */
-esp_err_t motor_forward(motor_t *motor);
+esp_err_t motor_forward(motor_config_t *mtr_cfg);
 
 /**
  * @brief Reverse motor direction
@@ -75,7 +75,7 @@ esp_err_t motor_forward(motor_t *motor);
  *      - ESP_OK: Reverse motor successfully
  *      - ESP_FAIL: Reverse motor failed because some other error occurred
  */
-esp_err_t motor_reverse(motor_t *motor);
+esp_err_t motor_reverse(motor_config_t *mtr_cfg);
 
 /**
  * @brief Stop motor
@@ -86,4 +86,4 @@ esp_err_t motor_reverse(motor_t *motor);
  *      - ESP_OK: Motor brake successfully
  *      - ESP_FAIL: Motor brake failed because some other error occurred
  */
-esp_err_t motor_brake(motor_t *motor);
+esp_err_t motor_brake(motor_config_t *mtr_cfg);

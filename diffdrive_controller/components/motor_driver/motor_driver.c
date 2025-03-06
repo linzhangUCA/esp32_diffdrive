@@ -7,7 +7,7 @@
 
 static const char *TAG = "MotorDriver";
 
-esp_err_t disable_motor(const motor_t *motor) {
+esp_err_t disable_motor(const motor_config_t *motor) {
   ESP_RETURN_ON_ERROR(gpio_reset_pin(motor->in1_pin), TAG,
                       "reset IN1 pin failed");
   ESP_RETURN_ON_ERROR(gpio_reset_pin(motor->in2_pin), TAG,
@@ -29,7 +29,7 @@ esp_err_t disable_motor(const motor_t *motor) {
   return ESP_OK;
 }
 
-esp_err_t enable_motor(const motor_t *motor) {
+esp_err_t enable_motor(const motor_config_t *motor) {
   // Reset GPIO pins
   ESP_RETURN_ON_ERROR(gpio_reset_pin(motor->in1_pin), TAG,
                       "reset IN1 pin failed");
@@ -67,36 +67,36 @@ esp_err_t enable_motor(const motor_t *motor) {
   return ESP_OK;
 }
 
-esp_err_t motor_forward(motor_t *motor) {
-  ESP_RETURN_ON_ERROR(gpio_set_level(motor->in1_pin, 0), TAG,
+esp_err_t motor_forward(motor_config_t *mtr_cfg) {
+  ESP_RETURN_ON_ERROR(gpio_set_level(mtr_cfg->in1_pin, 0), TAG,
                       "set IN1 low failed");
-  ESP_RETURN_ON_ERROR(gpio_set_level(motor->in2_pin, 1), TAG,
+  ESP_RETURN_ON_ERROR(gpio_set_level(mtr_cfg->in2_pin, 1), TAG,
                       "set IN2 high failed");
   ESP_LOGD(TAG, "Set motor forward");
   return ESP_OK;
 }
 
-esp_err_t motor_reverse(motor_t *motor) {
-  ESP_RETURN_ON_ERROR(gpio_set_level(motor->in1_pin, 1), TAG,
+esp_err_t motor_reverse(motor_config_t *mtr_cfg) {
+  ESP_RETURN_ON_ERROR(gpio_set_level(mtr_cfg->in1_pin, 1), TAG,
                       "set IN1 low failed");
-  ESP_RETURN_ON_ERROR(gpio_set_level(motor->in2_pin, 0), TAG,
+  ESP_RETURN_ON_ERROR(gpio_set_level(mtr_cfg->in2_pin, 0), TAG,
                       "set IN2 high failed");
   ESP_LOGD(TAG, "Set motor reverse");
   return ESP_OK;
 }
 
-esp_err_t motor_set_speed(motor_t *motor, int16_t duty_percent) {
+esp_err_t motor_set_speed(motor_config_t *mtr_cfg, int16_t duty_percent) {
   // Set directions, and clamp duty_percent between [-100, 100]
   if (duty_percent >= 0) {
     if (duty_percent > 100) {
       duty_percent = 100;
     }
-    motor_forward(motor);
+    motor_forward(mtr_cfg);
   } else {
     if (duty_percent < -100) {
       duty_percent = -100;
     }
-    motor_reverse(motor);
+    motor_reverse(mtr_cfg);
   }
 
   // Convert percentage to duty cycle (0-1023)
@@ -104,18 +104,19 @@ esp_err_t motor_set_speed(motor_t *motor, int16_t duty_percent) {
 
   // Update PWM duty
   ESP_RETURN_ON_ERROR(
-      ledc_set_duty(LEDC_LOW_SPEED_MODE, motor->pwm_channel, duty), TAG,
+      ledc_set_duty(LEDC_LOW_SPEED_MODE, mtr_cfg->pwm_channel, duty), TAG,
       "set dutycycle failed");
-  ESP_RETURN_ON_ERROR(ledc_update_duty(LEDC_LOW_SPEED_MODE, motor->pwm_channel),
-                      TAG, "update dutycycle failed");
+  ESP_RETURN_ON_ERROR(
+      ledc_update_duty(LEDC_LOW_SPEED_MODE, mtr_cfg->pwm_channel), TAG,
+      "update dutycycle failed");
   ESP_LOGI(TAG, "Set motor speed to %d", duty_percent);
   return ESP_OK;
 }
 
-esp_err_t motor_brake(motor_t *motor) {
-  ESP_RETURN_ON_ERROR(gpio_set_level(motor->in1_pin, 0), TAG,
+esp_err_t motor_brake(motor_config_t *mtr_cfg) {
+  ESP_RETURN_ON_ERROR(gpio_set_level(mtr_cfg->in1_pin, 0), TAG,
                       "set IN1 low failed");
-  ESP_RETURN_ON_ERROR(gpio_set_level(motor->in2_pin, 0), TAG,
+  ESP_RETURN_ON_ERROR(gpio_set_level(mtr_cfg->in2_pin, 0), TAG,
                       "set IN2 low failed");
   ESP_LOGI(TAG, "Stop motor");
   return ESP_OK;

@@ -8,7 +8,7 @@ int duty_pct;
 
 void app_main(void) {
   // Configure motor (adjust GPIOs as needed)
-  motor_t motor = {
+  motor_config_t motor_cfg = {
       .pwm_pin = GPIO_NUM_4,
       .in1_pin = GPIO_NUM_5,
       .in2_pin = GPIO_NUM_6,
@@ -16,34 +16,34 @@ void app_main(void) {
       .pwm_timer = LEDC_TIMER_0,
   };
 
-  enable_motor(&motor);
+  enable_motor(&motor_cfg);
 
   // Ramp up forward
   for (duty_pct = 0; duty_pct < 100; duty_pct = duty_pct + 5) {
-    motor_set_speed(&motor, duty_pct);
+    motor_set_speed(&motor_cfg, duty_pct);
     ESP_LOGI(TAG, "forward up");
     vTaskDelay(200 / portTICK_PERIOD_MS);
   }
   // Ramp down forward
   for (duty_pct = 100; duty_pct > 0; duty_pct = duty_pct - 5) {
-    motor_set_speed(&motor, duty_pct);
+    motor_set_speed(&motor_cfg, duty_pct);
     ESP_LOGI(TAG, "forward down");
     vTaskDelay(200 / portTICK_PERIOD_MS);
   }
   // Ramp up reverse
   for (duty_pct = 0; duty_pct > -100; duty_pct = duty_pct - 5) {
-    motor_set_speed(&motor, duty_pct);
+    motor_set_speed(&motor_cfg, duty_pct);
     ESP_LOGI(TAG, "reverse up");
     vTaskDelay(200 / portTICK_PERIOD_MS);
   }
   // Ramp down reverse
   for (duty_pct = -100; duty_pct < 0; duty_pct = duty_pct + 5) {
-    motor_set_speed(&motor, duty_pct);
+    motor_set_speed(&motor_cfg, duty_pct);
     ESP_LOGI(TAG, "reverse down");
     vTaskDelay(200 / portTICK_PERIOD_MS);
   }
 
   // Stop then disable motor
-  motor_brake(&motor);
-  disable_motor(&motor);
+  motor_brake(&motor_cfg);
+  disable_motor(&motor_cfg);
 }
