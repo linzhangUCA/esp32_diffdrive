@@ -19,7 +19,7 @@ void app_main(void) {
   enable_motor(&motor);
 
   // Initialize encoder
-  encoder_t encoder = {
+  encoder_config_t encoder = {
       .enc_a_pin = GPIO_NUM_13,
       .enc_b_pin = GPIO_NUM_14,
       .pcnt_unit = NULL,
@@ -33,7 +33,7 @@ void app_main(void) {
   for (duty_pct = 0; duty_pct < 100; duty_pct = duty_pct + 5) {
     motor_set_speed(&motor, duty_pct);
     vTaskDelay(200 / portTICK_PERIOD_MS);
-    ang_vel = encoder_get_velocity(&encoder, 0.2);
+    ang_vel = encoder_get_ang_vel(&encoder, 0.2);
     ESP_LOGI(TAG, "angular velocity: %f", ang_vel);
   }
   // Ramp down forward
@@ -41,7 +41,7 @@ void app_main(void) {
     motor_set_speed(&motor, duty_pct);
     pcnt_unit_get_count(encoder.pcnt_unit, &pulse_count);
     vTaskDelay(200 / portTICK_PERIOD_MS);
-    ang_vel = encoder_get_velocity(&encoder, 0.2);
+    ang_vel = encoder_get_ang_vel(&encoder, 0.2);
     ESP_LOGI(TAG, "angular velocity: %f", ang_vel);
   }
   // Ramp up reverse
@@ -49,7 +49,7 @@ void app_main(void) {
     motor_set_speed(&motor, duty_pct);
     pcnt_unit_get_count(encoder.pcnt_unit, &pulse_count);
     vTaskDelay(200 / portTICK_PERIOD_MS);
-    ang_vel = encoder_get_velocity(&encoder, 0.2);
+    ang_vel = encoder_get_ang_vel(&encoder, 0.2);
     ESP_LOGI(TAG, "angular velocity: %f", ang_vel);
   }
   // Ramp down reverse
@@ -57,7 +57,7 @@ void app_main(void) {
     motor_set_speed(&motor, duty_pct);
     pcnt_unit_get_count(encoder.pcnt_unit, &pulse_count);
     vTaskDelay(200 / portTICK_PERIOD_MS);
-    ang_vel = encoder_get_velocity(&encoder, 0.2);
+    ang_vel = encoder_get_ang_vel(&encoder, 0.2);
     ESP_LOGI(TAG, "angular velocity: %f", ang_vel);
   }
 
