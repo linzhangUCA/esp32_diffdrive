@@ -72,7 +72,7 @@ esp_err_t motor_forward(motor_t *motor) {
                       "set IN1 low failed");
   ESP_RETURN_ON_ERROR(gpio_set_level(motor->in2_pin, 1), TAG,
                       "set IN2 high failed");
-  ESP_LOGI(TAG, "Set motor forward");
+  ESP_LOGD(TAG, "Set motor forward");
   return ESP_OK;
 }
 
@@ -81,7 +81,7 @@ esp_err_t motor_reverse(motor_t *motor) {
                       "set IN1 low failed");
   ESP_RETURN_ON_ERROR(gpio_set_level(motor->in2_pin, 0), TAG,
                       "set IN2 high failed");
-  ESP_LOGI(TAG, "Set motor reverse");
+  ESP_LOGD(TAG, "Set motor reverse");
   return ESP_OK;
 }
 
